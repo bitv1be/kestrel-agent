@@ -204,6 +204,18 @@ docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64 \
   -f deploy/Dockerfile -t your-registry/kestrel:latest --push .
 ```
 
+Pushing a `v*` tag runs the full test, emulation, and image smoke-test suite,
+then publishes a multi-architecture image to GitHub Container Registry:
+
+```sh
+git tag -a v0.1.0 -m "Kestrel v0.1.0"
+git push origin v0.1.0
+docker pull ghcr.io/<owner>/<repo>:v0.1.0
+```
+
+The published image is tagged with the pushed tag, its semver form (`0.1.0`),
+and `latest` for stable versions. It uses the full toolset (`FULL=1`).
+
 The release build uses `CGO_ENABLED=0` and `-trimpath -ldflags='-s -w'`.
 Verified local artifacts are statically linked ELF binaries:
 
@@ -214,9 +226,9 @@ linux/riscv64  12 MB
 ```
 
 `alpine:3.23` has official amd64, arm64, and riscv64 variants. The GitHub
-Actions workflow is configured to run amd64 race tests, emulated arm64 and
-riscv64 tests, cross-compilation, a multi-platform image build, and
-per-architecture image smoke tests. These CI jobs have not yet been run.
+Actions workflow runs on every push and pull request, and publishes a
+multi-architecture image when a `v*` tag is pushed. It has not yet been
+exercised against a GitHub remote from this workspace.
 Locally the static binaries and amd64 slim/full images build and the image
 tools run as the non-root `agent` user. This Docker host has no QEMU/binfmt
 registration, so cross-architecture image builds and execution stop at the
