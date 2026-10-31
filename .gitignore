@@ -1,0 +1,11 @@
+/dist/
+/data/
+/workspace/
+/.scratch/
+*.db
+*.db-shm
+*.db-wal
+/agent
+/agent.exe
+/NUL
+/.env

@@ -1,0 +1,3 @@
+# Keep sources, Dockerfiles and scripts LF everywhere so Linux builds and
+# containers see exactly what the repository stores.
+* text=auto eol=lf
