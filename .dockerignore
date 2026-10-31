@@ -1,0 +1,14 @@
+.git
+.github
+.scratch
+.env
+dist
+data
+workspace
+*.db
+*.db-shm
+*.db-wal
+agent
+agent.exe
+docs
+README.md

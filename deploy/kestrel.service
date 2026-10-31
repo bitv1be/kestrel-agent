@@ -1,0 +1,24 @@
+[Unit]
+Description=Kestrel Telegram agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kestrel
+Group=kestrel
+WorkingDirectory=/var/lib/kestrel/workspace
+Environment=AGENT_DATA_DIR=/var/lib/kestrel/data
+Environment=AGENT_WORKSPACE=/var/lib/kestrel/workspace
+Environment=AGENT_LOG_FORMAT=json
+EnvironmentFile=-/etc/kestrel/env
+ExecStart=/usr/local/bin/agent gateway
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/kestrel
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,45 @@
+services:
+  agent:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        FULL: "1"
+    image: kestrel-agent:local
+    restart: unless-stopped
+    init: false # the image already uses tini
+    environment:
+      AGENT_TELEGRAM_TOKEN: ${AGENT_TELEGRAM_TOKEN:?set AGENT_TELEGRAM_TOKEN}
+      AGENT_TELEGRAM_ALLOWED_USERS: ${AGENT_TELEGRAM_ALLOWED_USERS:?set AGENT_TELEGRAM_ALLOWED_USERS}
+      AGENT_TELEGRAM_LOG_ACTIONS: ${AGENT_TELEGRAM_LOG_ACTIONS:-}
+      AGENT_TELEGRAM_SHOW_REASONING: ${AGENT_TELEGRAM_SHOW_REASONING:-}
+      AGENT_TELEGRAM_DRAFT_STREAMING: ${AGENT_TELEGRAM_DRAFT_STREAMING:-}
+      AGENT_TELEGRAM_PINNED_STATUS: ${AGENT_TELEGRAM_PINNED_STATUS:-}
+      AGENT_SKILLS_GITHUB_TOKEN: ${AGENT_SKILLS_GITHUB_TOKEN:-}
+      AGENT_PROVIDER_BASE_URL: ${AGENT_PROVIDER_BASE_URL:?set AGENT_PROVIDER_BASE_URL}
+      AGENT_PROVIDER_API_KEY: ${AGENT_PROVIDER_API_KEY:-}
+      AGENT_PROVIDER_MODEL: ${AGENT_PROVIDER_MODEL:?set AGENT_PROVIDER_MODEL}
+      AGENT_PROVIDER_NAME: ${AGENT_PROVIDER_NAME:-default}
+      AGENT_PROXY: ${AGENT_PROXY:-}
+      AGENT_TELEGRAM_PROXY: ${AGENT_TELEGRAM_PROXY:-}
+      AGENT_WEB_PROXY: ${AGENT_WEB_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      ALL_PROXY: ${ALL_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-}
+    volumes:
+      - agent-data:/data
+      - agent-workspace:/workspace
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=64m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: "2.0"
+    stop_grace_period: 30s
+
+volumes:
+  agent-data:
+  agent-workspace:

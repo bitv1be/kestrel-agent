@@ -1,0 +1,38 @@
+data_dir: /data
+workspace: /workspace
+log_format: json
+active: cloud:gpt-4o-mini
+proxy: "" # empty uses HTTP_PROXY / HTTPS_PROXY / ALL_PROXY and NO_PROXY
+telegram:
+  token: ${AGENT_TELEGRAM_TOKEN}
+  allowed_users: [123456789]
+  proxy: socks5://127.0.0.1:1080
+  log_actions: true # post every tool action as its own message
+  show_reasoning: true # post the model's reasoning before each answer
+  draft_streaming: true # animate partial answers with Bot API drafts in private chats
+  pinned_status: true # keep one pinned live status message per chat
+agent:
+  max_iterations: 0 # 0 = no cap; stop with /stop or on provider failure
+  run_timeout: 0s # 0 = no wall-clock limit for one run
+tools:
+  roots: [/workspace]
+  approval: ask
+  web_proxy: none
+skills:
+  enabled: true
+  dir: /data/skills
+  # Optional: raises GitHub API limits for marketplace search. Public
+  # repositories work without it. Set AGENT_SKILLS_GITHUB_TOKEN instead in Docker.
+  github_token: ${AGENT_SKILLS_GITHUB_TOKEN}
+providers:
+  - name: cloud
+    base_url: https://api.openai.com/v1
+    api_key: ${OPENAI_API_KEY}
+    default_model: gpt-4o-mini
+    proxy: socks5://127.0.0.1:1080
+  - name: ollama
+    base_url: http://host.docker.internal:11434/v1
+    api_key: ""
+    default_model: llama3.1
+    proxy: none
+    supports_tools: false
